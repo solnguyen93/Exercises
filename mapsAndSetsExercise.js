@@ -20,13 +20,13 @@
 
 // // hasDuplicate
 // // Write a function called hasDuplicate which accepts an array and returns true or false if that array contains a duplicate
-// function hasDuplicate(arr) {
-//     if (arr.length === [...new Set(arr)].length) {
-//         return false;
-//     }
-//     return true;
-// }
-// const hasDuplicateShorten = (arr) => arr.length !== [...new Set(arr)].length;
+function hasDuplicate(arr) {
+    if (arr.length === [...new Set(arr)].length) {
+        return false;
+    }
+    return true;
+}
+const hasDuplicateShorten = (arr) => arr.length !== [...new Set(arr)].length;
 
 // console.log(hasDuplicateShorten([1, 3, 2, 1])); // true
 // console.log(hasDuplicateShorten([1, 5, -1, 4])); // false
