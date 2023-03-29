@@ -1,0 +1,117 @@
+#game div {
+    border: 1px solid black;
+    border-radius: 5px;
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+    display: inline-block;
+}
+
+#game div:active {
+    transform: scale(1.05);
+    transition: transform 0.2s;
+}
+
+#startGame > h1 {
+    text-align: center;
+}
+
+#startScreen {
+    margin: auto;
+    position: relative;
+    width: 90vh;
+    height: 90vh;
+    background-color: whitesmoke;
+    color: #000000;
+    border: 4px solid;
+    border-radius: 10px;
+    box-shadow: rgb(117, 117, 117) 0px 0px 10px;
+}
+
+div#startScreen > h1 {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 50px;
+    position: relative;
+    text-align: center;
+    margin-top: 35%;
+    margin-bottom: 1%;
+    color: #000000;
+    text-shadow: rgb(0, 87, 36) 1px 1px 5px;
+}
+
+div#startScreen > h4 {
+    font-size: 12px;
+    font-weight: 50;
+    position: relative;
+    text-align: center;
+    color: #000000;
+}
+div#startScreen > h4:hover {
+    color: rgb(255, 255, 255);
+    text-shadow: rgb(0, 0, 0) 1px 1px 5px;
+}
+.slidercontainer {
+    position: absolute;
+}
+.slider {
+    position: relative;
+    top: 70px;
+    display: grid;
+    margin: auto;
+    height: 5px;
+    background: #d3d3d3;
+    outline: none;
+}
+output {
+    position: relative;
+    top: 40px;
+    text-align: center;
+    display: grid;
+    font-size: 12px;
+}
+div > span {
+    position: relative;
+    top: 70px;
+    text-align: center;
+    display: grid;
+    font-size: 12px;
+}
+
+#gameOver {
+    margin: auto;
+    position: relative;
+    width: 90vh;
+    height: 90vh;
+    background-color: whitesmoke;
+    color: #000000;
+    border: 4px solid;
+    border-radius: 10px;
+    box-shadow: rgb(156, 0, 0) 0px 0px 10px;
+}
+
+div#gameOver > h1 {
+    font-size: 50px;
+    position: relative;
+    text-align: center;
+    margin-top: 35%;
+    margin-bottom: 1%;
+    color: #000000;
+    text-shadow: rgb(156, 0, 0) 1px 1px 5px;
+}
+
+div#gameOver > h4 {
+    font-size: 12px;
+    font-weight: 50;
+    position: relative;
+    text-align: center;
+    color: #000000;
+}
+
+div > button {
+    border: rgb(133, 133, 133) solid 1px;
+    border-radius: 4px;
+    color: blue;
+    font-size: 12px;
+    padding: auto;
+    margin-bottom: 50px;
+}
