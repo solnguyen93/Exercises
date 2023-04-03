@@ -72,7 +72,7 @@ class Game {
     placeInTable(y, x) {
         const piece = document.createElement('div');
         piece.classList.add('piece');
-        piece.style.backgroundColor = this.currPlayer.color;
+        piece.style.backgroundColor = this.currPlayer;
         piece.style.top = -50 * (y + 2);
 
         const spot = document.getElementById(`${y}-${x}`);
@@ -101,7 +101,7 @@ class Game {
         // check for win
         if (this.checkForWin()) {
             this.gameOver = true;
-            return this.endGame(`${this.currPlayer.color} won!`);
+            return this.endGame(`${this.currPlayer} won!`);
         }
         // check for tie
         if (this.board.every((row) => row.every((cell) => cell))) {
@@ -154,16 +154,10 @@ class Game {
     }
 }
 
-class Player {
-    constructor(color) {
-        this.color = color;
-    }
-}
-
 const startButton = document.querySelector('#startBtn');
 
 startButton.addEventListener('click', () => {
-    let player1 = new Player(document.querySelector('#player1').value);
-    let player2 = new Player(document.querySelector('#player2').value);
+    let player1 = document.querySelector('#player1').value;
+    let player2 = document.querySelector('#player2').value;
     new Game(player1, player2);
 });
