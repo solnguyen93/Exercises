@@ -8,7 +8,7 @@ const $episodesList = $('#episodes-list');
 //
 /**send GET request to get list of shows based on user's search term */
 async function getShowsByTerm(searchTerm) {
-    const response = await axios.get('http://api.tvmaze.com/search/shows?q=<search query>', {
+    const response = await axios.get('https://api.tvmaze.com/search/shows?q=<search query>', {
         params: { q: `'${searchTerm}'` },
     });
     let shows = response.data.map((result) => {
