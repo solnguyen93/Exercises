@@ -1,0 +1,11 @@
+{% extends 'base.html' %} {% block title %}Pick A Story{% endblock %} {% block content %}
+<h1>Pick A Story:</h1>
+<form action="/form" method="POST">
+    <label for="story">Select Story:</label>
+    <select id="story" name="story">
+        <option value="story1">Story 1</option>
+        <option value="story2">Story 2</option>
+    </select>
+    <input type="submit" value="Submit" />
+</form>
+{% endblock %}

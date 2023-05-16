@@ -1,0 +1,25 @@
+{% extends 'base.html' %} {% block title %}Form{% endblock %} {% block content %}
+<h1>MADLIBS</h1>
+<form action="/story" method="POST">
+    <!--store storyid to use in func show_story -->
+    <input type="hidden" name="story" value="{{ storyid }}" />
+
+    <label for="verb">Verb: </label>
+    <input type="text" placeholder="eat" name="verb" id="verb" />
+
+    <label for="noun">Noun: </label>
+    <input type="text" placeholder="dragon" name="noun" id="noun" />
+    {% if storyid == "story1" %}
+    <label for="place">Place: </label>
+    <input type="text" placeholder="condo" name="place" id="place" />
+
+    <label for="adjective">Adjective: </label>
+    <input type="text" placeholder="frozen" name="adjective" id="adjective" />
+
+    <label for="plural_noun">Plural Noun: </label>
+    <input type="text" placeholder="popsicles" name="plural_noun" id="plural_noun" />
+    {% endif %}
+
+    <input type="submit" value="Submit" />
+</form>
+{% endblock %}
