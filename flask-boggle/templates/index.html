@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Boggle</title>
+        <link rel="stylesheet" href="/static/style.css" />
+    </head>
+    <body>
+        <main id="content">
+            <div id="game-container">
+                <h2>Current Board:</h2>
+                <table>
+                    {% for row in board %}
+                    <tr>
+                        {% for cell in row %}
+                        <td>{{ cell }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <div id="stats-container">
+                <h2>Stats:</h2>
+                <p id="timer">Time Left: 60</p>
+                <p id="score">Score: 0</p>
+                <p>Highest Score: {{ highest_score }}</p>
+                <p>Total Plays: {{ total_plays }}</p>
+            </div>
+
+            <div id="word-form-container">
+                <h2>Word:</h2>
+                <p id="valid-words"></p>
+                <form method="POST" id="add-word">
+                    <input type="text" name="word" placeholder="Enter your word" />
+                    <input type="submit" value="Submit" />
+                    <p id="message"></p>
+                </form>
+            </div>
+        </main>
+        <script src="/static/boggle.js"></script>
+        <script src="https://unpkg.com/jquery"></script>
+        <script src="https://unpkg.com/axios/dist/axios.js"></script>
+    </body>
+</html>
