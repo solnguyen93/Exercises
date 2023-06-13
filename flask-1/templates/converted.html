@@ -1,0 +1,6 @@
+{% extends 'base.html' %} {% block title %} Converted amount {% endblock %} {% block content %}
+<div id="converted-amount">
+    <h2>{{amount}} {{from_currency}} is {{converted_amount}} {{ description }} ({{to_currency}}) with a rate of {{rate}}.</h2>
+</div>
+<button onclick="window.location.href='/'">Home</button>
+{% endblock %}
