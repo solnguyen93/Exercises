@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}User Details{% endblock %}
+
+{% block content %}
+    <div class="user-details">
+        <div class="user-image-container">
+            <img src="{{ user.img_url }}" alt="{{ user.first_name }}'s Image" width="100" height="200">
+        </div>
+        <div class="user-info">
+            <h1>{{ user.first_name }} {{ user.last_name }}</h1>
+            <div class="user-buttons">
+                <button class="button-edit" onclick="window.location.href='/edit_user/{{ user.id }}'">Edit</button>
+                <form action='/delete_user/{{ user.id }}' method='POST'>
+                    <button class="button-delete">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
