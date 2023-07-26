@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Post Details{% endblock %}
+
+{% block content %}
+    <div class="post-details">
+        <h1>{{ post.title }}</h1>
+        <p>{{ post.content }}</p>
+        <p><em><strong>By {{post.user.first_name}} {{post.user.last_name}}</strong></em>    |   {{ post.created_at.strftime('%b %d, %Y, %I:%M %p') }}</p>
+        <div class="post-buttons-container">
+            <button type="button" class="button-cancel-post" onclick="window.location.href='/{{post.user_id}}'">Cancel</button>
+            <button class="button-edit-post" onclick="window.location.href='/edit_post/{{ post.id }}'">Edit</button>
+            <form action='/delete_post/{{ post.id }}' method='POST'>
+                <button class="button-delete-post">Delete</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

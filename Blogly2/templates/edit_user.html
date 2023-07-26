@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit User{% endblock %} 
+
+{% block content %}
+    {% with message = get_flashed_messages() %}
+        <p class="">{{ message[0] }}</p>
+    {% endwith %}
+
+    <h1>Edit a user</h1>
+
+    <form action='/edit_user/{{ user.id }}' method='POST' class="form">
+        <input type='text' name='first_name' required value='{{ user.first_name }}'>
+        <input type='text' name='last_name' required value='{{ user.last_name }}'>
+        <input type='text' name='img_url' placeholder='Img URL' value='{{ user.img_url }}'>
+        <button type="button" class="button-cancel" onclick="window.location.href='/{{ user.id }}'">Cancel</button>
+        <button type="submit" class="button-add-user">Save</button>
+    </form>
+
+    
+{% endblock %}
