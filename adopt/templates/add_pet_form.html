@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Add a Pet{% endblock %}
+
+{% block content %}
+<style>
+    .required-label:before {
+        content: "* ";
+        color: red;
+    }
+    .required-text {
+        color: red;
+    }
+</style>
+
+<h1>Add a Pet Form</h1>
+<p class="required-label required-text">required fields</p>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="col-md-6">
+        {{ form.name.label(class_="required-label") }}
+        {{ form.name() }}
+    </div>
+    <div class="col-md-6">
+        {{ form.species.label(class="required-label") }}
+        {{ form.species() }}
+    </div>
+    <div class="col-md-12">
+        {{ form.photo_url.label }}
+        {{ form.photo_url() }}
+    </div>
+    <div class="col-md-6">
+        {{ form.age.label }}
+        {{ form.age() }}
+    </div>
+    <div class="col-md-6">
+        {{ form.notes.label }}
+        {{ form.notes() }}
+    </div>
+    <div class="col-md-6">
+        {{ form.available.label }}
+        {{ form.available() }}
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <a href='/' class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+{% endblock %}

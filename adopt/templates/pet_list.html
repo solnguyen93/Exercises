@@ -1,0 +1,71 @@
+{% extends 'base.html' %} 
+
+{% block title %}Pet List{% endblock %} 
+
+{% block content %}
+<style>
+    .card:hover {
+        transform: scale(1.05);
+        transition: transform 0.2s;
+        color: #000000;
+        text-decoration: none;
+    }
+
+    .card {
+    color: #000000;
+    text-decoration: none;
+    margin: 20px;
+    }
+    
+</style>
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<h2>Available Pets</h2>
+<div class="row">
+    {% for pet in pets %}
+        {% if pet.available %}
+        <div>
+            <a href="/{{ pet.id }}" class="card">
+                {% if pet.photo_url %}
+                    <img src="{{ pet.photo_url }}" class="card-img-top" style="width: 300px; height: 200px" alt="{{ pet.name }}">
+                {% else %}
+                    <div class="blank-photo" style="width: 300px; height: 200px; background-color: #ccc;"></div>
+                {% endif %}
+                <div class="card-body">
+                    <p class="card-text">{{pet.name}}<strong> is avaliable!</strong></p>
+                </div>
+            </a>
+        </div>
+        {% endif %}
+    {% endfor %}
+</div>
+
+<a href='/add' class="btn btn-primary mb-3">Add a Pet</a>
+
+<h2>No Longer Available Pets</h2>
+<div class="row">
+    {% for pet in pets %}
+        {% if not pet.available %}
+        <div>
+            <a href="/{{ pet.id }}" class="card">
+                {% if pet.photo_url %}
+                    <img src="{{ pet.photo_url }}" class="card-img-top" style="width: 300px; height: 200px" alt="{{ pet.name }}">
+                {% else %}
+                    <div class="blank-photo" style="width: 300px; height: 200px; background-color: #ccc;"></div>
+                {% endif %}
+                <div class="card-body">
+                    <p class="card-text">{{pet.name}} is no longer avaliable.</p>
+                </div>
+            </a>
+        </div>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}
