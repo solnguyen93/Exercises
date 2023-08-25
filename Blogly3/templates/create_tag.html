@@ -1,0 +1,45 @@
+{% extends 'base.html' %} 
+
+{% block title %}Create Tag{% endblock %} 
+
+{% block content %}
+
+{% with message = get_flashed_messages() %}
+    <p class="">{{ message[0] }}</p>
+{% endwith %}
+
+<h1>Create a tag</h1>
+
+<p id="tag-error-msg"></p>
+
+<form action='/add_tag' method='POST' class="form">
+    <div class="existing-tags" style="display: none;">
+        {% for tag in tags %}
+          <span>{{ tag.name }}</span>
+        {% endfor %}
+    </div>
+    <label for="name">Name</label> 
+    <input type='text' id='tag-name' name='name' placeholder='Enter a name for a tag' required>
+    <button type="button" class="button-cancel" onclick="window.location.href='/'">Cancel</button>
+    <button type="submit" class="button-add-tag">Add</button>
+</form>
+
+<!-- Check if the tag name is already taken (front-end validation) --> 
+<script>
+    const tagInput = document.getElementById('tag-name');
+    const tagErrorMsg = document.getElementById('tag-error-msg');
+
+    tagInput.addEventListener('input', () => {
+        const tagName = tagInput.value; 
+        tagErrorMsg.textContent = '';
+
+        if (tagName) {
+            const existingTags = Array.from(document.querySelectorAll('.existing-tags span')).map(tag => tag.textContent);
+            if (existingTags.includes(tagName)) {
+                tagErrorMsg.textContent = 'Tag name must be unique.';
+            }
+        }
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Tag{% endblock %} 
+
+{% block content %}
+
+{% with message = get_flashed_messages() %}
+    <p class="">{{ message[0] }}</p>
+{% endwith %}
+
+<h1>Edit a tag</h1>
+<form action='/add_tag' method='POST' class="form">
+    <input type='hidden' name='tag_id' value='{{ tag.id }}'>
+    <label for="name">Name</label>
+    <input type='text' name='name' value='{{ tag.name }}' required>
+    <button type="button" class="button-cancel-tag" onclick="window.location.href='/'">Cancel</button>
+    <button type="submit" class="button-add-tag">Save</button>
+</form>
+
+<form action='/delete_tag/{{ tag.id }}' method='POST'>
+    <button class="button-delete-tag">Delete</button>
+</form>
+
+<div class="posts-container">
+    <h1>All posts</h1>
+    <ul>
+        <form action='/update_tag_posts/{{ tag.id }}' method='POST'>
+            {% for post in posts %}
+            <li>
+                <input type="checkbox" name="posts" value="{{ post.id }}" {% if tag in post.tags %}checked{% endif %}>
+                <label>{{ post.title }}</label>
+            </li>
+            {% endfor %}
+            <button type="button" class="button-cancel-tag" onclick="window.location.href='/'">Cancel</button>
+            <button type="submit" class="button-add-tag">Save</button>
+        </form>
+    </ul>
+</div>
+{% endblock %}

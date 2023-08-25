@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Tag{% endblock %} 
+
+{% block content %}
+
+{% with message = get_flashed_messages() %}
+    <p class="">{{ message[0] }}</p>
+{% endwith %}
+
+<h1>All posts with {{ tag.name }}</h1>
+<ul class="post-list">
+    {% for post in tag.posts %}
+        <li><a href="/post_details/{{ post.id }}">{{ post.title }}</a></li>
+        <p><em><strong>Posted By {{post.user.first_name}} {{post.user.last_name}}</strong></em>    on {{ post.created_at.strftime('%b %d, %Y, %I:%M %p') }}</p>
+    {% endfor %}
+</ul>
+<button class="button-edit-tag" onclick="window.location.href='/edit_tag/{{ tag.id }}'">Edit</button>
+{% endblock %}
