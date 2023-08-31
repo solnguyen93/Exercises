@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{% block title %} {% endblock %}</title>
+        <link rel="stylesheet" href="/static/app.css" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat&display=swap">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    </head>
+    <body>
+        <header>
+            <h1>Cupcakes</h1>
+            <a href="/" class="button-home">HOME</a>
+        </header>
+        <main id="content">{% block content %} {% endblock %}</main>
+        <script src="https://unpkg.com/jquery"></script>
+        <script src="https://unpkg.com/axios/dist/axios.js"></script>
+    </body>
+</html>

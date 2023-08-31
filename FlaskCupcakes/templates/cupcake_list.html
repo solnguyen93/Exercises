@@ -1,0 +1,83 @@
+{% extends 'base.html' %} 
+
+{% block title %} Cupcake List {% endblock %} 
+
+{% block content %}
+
+<h1>Add Cupcake Form</h1>
+<form id="cupcake-form">
+    <label for="flavor">Flavor:</label>
+    <input type="text" id="flavor" name="flavor" required><br>
+    <label for="size">Size:</label>
+    <input type="text" id="size" name="size" required><br>
+    <label for="rating">Rating:</label>
+    <input type="number" id="rating" name="rating" min="1" max="10" required><br>
+    <label for="image">Image URL:</label>
+    <input type="text" id="image" name="image" required><br>
+    <button type="submit">Add Cupcake</button>
+</form>
+
+<h1>Cupcake List</h1>
+<ul id="cupcake-list"><!-- Empty list for displaying cupcakes dynamically --></ul>
+
+<script>
+    async function fetchCupcakes() {
+        try {
+            const response = await axios.get('/api/cupcakes');
+            const res = response.data.cupcake;
+            const cupcakeList = $('#cupcake-list');
+            cupcakeList.empty();
+            res.forEach(cupcake => {
+                const listItem = $('<li>').text(`${cupcake.flavor} - Size: ${cupcake.size}, Rating: ${cupcake.rating}`);
+                
+                // Create image container and image element
+                const imageContainer = $('<div>').addClass('cupcake-image-container');
+                const image = $('<img>').attr({
+                    src: cupcake.image,
+                    alt: `${cupcake.flavor}'s Image`,
+                    width: 150,
+                    height: 200
+                });
+                imageContainer.append(image);
+                listItem.append(imageContainer);
+                
+                cupcakeList.append(listItem);
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    $('#cupcake-form').submit(async function(event) {
+        event.preventDefault();
+        const formData = $(this).serializeArray();
+        let cupcakeData = {
+            flavor: formData[0].value,
+            size: formData[1].value,
+            rating: parseInt(formData[2].value),
+            image: formData[3].value
+        };
+
+        try {
+            await axios.post('/api/cupcakes', cupcakeData);
+            await fetchCupcakes();
+            $('#cupcake-form')[0].reset();
+        } catch (error) {
+            console.error(error);
+        }
+    });
+
+    $(document).ready(async function() {
+        await fetchCupcakes();
+    });
+</script>
+
+    
+{% endblock %}
+
+
+
+
+
+
+
