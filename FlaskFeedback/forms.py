@@ -19,27 +19,3 @@ class FeedbackForm (FlaskForm):
     """Form for adding feedback"""
     title = StringField('Title', validators=[InputRequired(), Length(max=100)])
     content = StringField('Content', validators=[InputRequired()]) 
-
-
-
-"""
-WTForms-Alchemy ALTERNATIVE:
-
-from models import User, Feedback
-   
-BaseModelForm = model_form_factory(FlaskForm)
-
-class RegisterForm(ModelForm)  
-    class Meta:        
-        model = User
-
-class LoginForm(ModelForm)  
-    class Meta:        
-        model = User
-        exclude = ('email', 'first_name','last_name')
-
-class FeedbackForm(ModelForm)   
-    class Meta:        
-        model = Feedback
-        only = ('title', 'content')
-"""
