@@ -1,3 +1,9 @@
+.form-control::placeholder {
+  color: #bdbdbd; 
+}
+
+
+
 /* ====================== General */
 
 body {
@@ -202,6 +208,9 @@ nav + .container {
   opacity: 0.7;
   background-size: cover;
   background-position: top center;
+  background-image: url("/static/images/warbler-hero.jpg");
+  background-size: cover; 
+  background-position: center top;
 }
 
 .full-width {

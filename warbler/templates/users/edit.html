@@ -9,10 +9,11 @@
         {{ form.hidden_tag() }}
 
         {% for field in form if field.widget.input_type != 'hidden' and field.name != 'password' %}
+          <label for="{{ field.id}}">{{ field.label.text}}</label>
           {% for error in field.errors %}
-            <span class="text-danger">{{ error }}</span>
+          <span class="text-danger">{{ error }}</span>
           {% endfor %}
-          {{ field(placeholder=field.label.text, class="form-control") }}
+          <input type="{{ field.widget.input_type }}" id="{{ field.id }}" name="{{ field.name }}" class="form-control" value="{{ g.user[field.name] }}">
         {% endfor %}
 
         <p>To confirm changes, enter your password:</p>
@@ -27,7 +28,7 @@
 
         <div class="edit-btn-area">
           <button class="btn btn-success">Edit this user!</button>
-          <a href="/users/{{ user_id }}" class="btn btn-outline-secondary">Cancel</a>
+          <a href="/users/{{ g.user.id }}" class="btn btn-outline-secondary">Cancel</a>
         </div>
       </form>
     </div>

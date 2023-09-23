@@ -4,8 +4,8 @@ from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
-from forms import UserAddForm, LoginForm, MessageForm
-from models import db, connect_db, User, Message
+from forms import UserAddForm, LoginForm, MessageForm, UserEditForm
+from models import db, connect_db, User, Message, Follows, Likes
 
 CURR_USER_KEY = "curr_user"
 
@@ -67,8 +67,18 @@ def signup():
 
     form = UserAddForm()
 
-    if form.validate_on_submit():
+    if form.is_submitted() and form.validate():
         try:
+            if User.query.filter(User.username==form.username.data).first():
+                # Check if the new username is already in use
+                flash("Username already taken", 'danger')
+                return render_template('users/signup.html', form=form)
+
+            if User.query.filter(User.email==form.email.data).first():
+                # Check if the new email is already in use
+                flash("Email already taken", 'danger')
+                return render_template('users/signup.html', form=form)
+
             user = User.signup(
                 username=form.username.data,
                 password=form.password.data,
@@ -78,7 +88,7 @@ def signup():
             db.session.commit()
 
         except IntegrityError:
-            flash("Username already taken", 'danger')
+            flash("An error occurred while creating your account", 'danger')
             return render_template('users/signup.html', form=form)
 
         do_login(user)
@@ -95,7 +105,7 @@ def login():
 
     form = LoginForm()
 
-    if form.validate_on_submit():
+    if form.is_submitted() and form.validate():
         user = User.authenticate(form.username.data,
                                  form.password.data)
 
@@ -113,7 +123,14 @@ def login():
 def logout():
     """Handle logout of user."""
 
-    # IMPLEMENT THIS
+    if g.user:
+        do_logout()
+        flash(f"Goodbye, {g.user.username}!", "success")
+        return redirect("/login")
+
+    flash("Invalid credentials.", 'danger')
+    return redirect('/')
+
 
 
 ##############################################################################
@@ -142,15 +159,16 @@ def users_show(user_id):
 
     user = User.query.get_or_404(user_id)
 
-    # snagging messages in order from the database;
-    # user.messages won't be in order by default
     messages = (Message
                 .query
                 .filter(Message.user_id == user_id)
                 .order_by(Message.timestamp.desc())
                 .limit(100)
                 .all())
-    return render_template('users/show.html', user=user, messages=messages)
+
+    like_count = Likes.query.filter_by(user_id=user_id).count()
+
+    return render_template('users/show.html', user=user, messages=messages, like_count=like_count)
 
 
 @app.route('/users/<int:user_id>/following')
@@ -210,8 +228,54 @@ def stop_following(follow_id):
 @app.route('/users/profile', methods=["GET", "POST"])
 def profile():
     """Update profile for current user."""
+    
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
 
-    # IMPLEMENT THIS
+    form = UserEditForm()
+
+    if form.is_submitted() and form.validate():
+
+        # Check if the new username is current user's username
+        if form.username.data != g.user.username:
+            # Check if the new username is already in use
+            if User.query.filter(User.username == form.username.data).first():
+                flash("Username already taken", 'danger')
+                return redirect ('/users/profile')
+
+        # Check if the new email is current user's email
+        if form.email.data != g.user.email:
+            # Check if the new email is already in use
+            if User.query.filter(User.email == form.email.data).first():
+                flash("Email already taken", 'danger')
+                return redirect ('/users/profile')
+
+        # Authenticate the user using their old username and password
+        user = User.authenticate(g.user.username, form.password.data)
+
+        if user:
+            try:
+                # Populate user attributes, excluding the password
+                g.user.username = form.username.data
+                g.user.email = form.email.data
+                g.user.image_url = form.image_url.data
+                g.user.header_image_url = form.header_image_url.data
+                g.user.bio = form.bio.data
+                db.session.commit()
+                flash("Profile updated successfully.", "success")
+                return redirect(f"/users/{g.user.id}")
+
+            except IntegrityError:
+                flash("Username or email already taken", 'danger')
+                return redirect ('/users/profile')
+        else:
+            flash("Invalid password.", 'danger')
+
+    return render_template('users/edit.html', form=form)
+
+
+
 
 
 @app.route('/users/delete', methods=["POST"])
@@ -246,7 +310,7 @@ def messages_add():
 
     form = MessageForm()
 
-    if form.validate_on_submit():
+    if form.is_submitted() and form.validate():
         msg = Message(text=form.text.data)
         g.user.messages.append(msg)
         db.session.commit()
@@ -273,10 +337,41 @@ def messages_destroy(message_id):
         return redirect("/")
 
     msg = Message.query.get(message_id)
+
+    # Check if the message exists
+    if not msg:
+        flash("Message not found.", "danger")
+        return redirect(f"/users/{g.user.id}")
+
+    # Check if the currently logged-in user is the owner of the message
+    if g.user.id != msg.user_id:
+        flash("Access unauthorized.", "danger")
+        return redirect(f"/users/{g.user.id}")
+
     db.session.delete(msg)
     db.session.commit()
 
     return redirect(f"/users/{g.user.id}")
+##############################################################################
+# Likes routes:
+
+@app.route('/messages/<int:message_id>/like', methods=['POST'])
+def like_unlike(message_id):
+    """Have currently-logged-in-user like/unlike this message."""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    message = Message.query.get(message_id)
+    if message in g.user.likes:
+        g.user.likes.remove(message)    # Unlike if already liked
+    else:
+        g.user.likes.append(message)
+    db.session.commit()
+
+    return redirect(f"/")
+
 
 
 ##############################################################################
@@ -292,13 +387,21 @@ def homepage():
     """
 
     if g.user:
+
+        # Get the IDs of users being followed by the logged-in user (For each "follow" relationship, this code retrieves the IDs of users who are being followed by the currently logged-in user. It does this by querying the database and filtering the results based on the user's ID.)
+        following_ids = [follow.user_being_followed_id for follow in Follows.query.filter_by(user_following_id=g.user.id).all()]
+
+        # Get the IDs of users the logged-in user is following
         messages = (Message
                     .query
+                    .filter(Message.user_id.in_(following_ids))
                     .order_by(Message.timestamp.desc())
                     .limit(100)
                     .all())
 
-        return render_template('home.html', messages=messages)
+        liked_message_ids = [like.message_id for like in Likes.query.filter_by(user_id=g.user.id).all()]
+
+        return render_template('home.html', messages=messages, liked_message_ids=liked_message_ids)
 
     else:
         return render_template('home-anon.html')
