@@ -1,0 +1,25 @@
+{
+    "name": "maketext",
+    "version": "1.0.0",
+    "description": "",
+    "main": "markov",
+    "scripts": {
+        "test": "jest"
+    },
+    "type": "module",
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@babel/core": "^7.23.6",
+        "@babel/preset-env": "^7.23.6",
+        "babel-jest": "^29.7.0"
+    },
+    "jest": {
+        "transform": {
+            "^.+\\.js$": "babel-jest"
+        }
+    },
+    "dependencies": {
+        "axios": "^1.6.2"
+    }
+}
