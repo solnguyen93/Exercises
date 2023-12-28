@@ -1,6 +1,6 @@
 import express from 'express';
 const invoicesRouter = express.Router();
-import ExpressError from './expressError.js';
+import ExpressError from './../expressError.js';
 
 // router.get('/', (req, res, next) => {
 //     try {

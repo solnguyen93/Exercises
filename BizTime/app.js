@@ -3,8 +3,8 @@
 import express from 'express';
 import ExpressError from './expressError.js';
 import db from './db.js';
-import companiesRouter from './companies.js';
-import invoicesRouter from './invoices.js';
+import companiesRouter from './routes/companies.js';
+import invoicesRouter from './routes/invoices.js';
 
 const app = express();
 
