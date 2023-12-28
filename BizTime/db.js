@@ -15,9 +15,9 @@ if (process.env.NODE_ENV === 'test') {
 }
 
 const db = new Client({
-    user: process.env.DB_USER || 'your_username',
-    database: DB_NAME || 'your_database_name',
-    password: process.env.DB_PASSWORD || 'your_password',
+    user: process.env.DB_USER || 'your_username', // Update with your PostgreSQL username
+    database: DB_NAME || 'your_database_name', // Update with your database name
+    password: process.env.DB_PASSWORD || 'your_password', // Update with your PostgreSQL password
 });
 
 db.connect()
