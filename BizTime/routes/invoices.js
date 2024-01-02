@@ -56,9 +56,9 @@ invoicesRouter.post('/', async (req, res, next) => {
     try {
         // Needs to be passed in JSON body of: {comp_code, amt}
         const { comp_code, amt } = req.body;
-        const results = await db.query(`INSERT INTO invoices VALUES ($1, $2) RETURNING *`, [comp_code, amt]);
+        const results = await db.query(`INSERT INTO invoices (comp_code, amt) VALUES ($1, $2) RETURNING *`, [comp_code, amt]);
         // Returns obj of new invoice: {invoice: {id, comp_code, amt, paid, add_date, paid_date}}
-        return res.json({ invoice: results.rows[0] });
+        return res.status(201).json({ invoice: results.rows[0] });
     } catch (err) {
         next(err);
     }
@@ -72,11 +72,27 @@ invoicesRouter.put('/:id', async (req, res, next) => {
         if (!invoice.rows[0]) {
             throw new ExpressError('Invoice not found', 404);
         }
-        // Needs to be passed in a JSON body of {amt}
-        const { amt } = req.body;
-        const results = await db.query(`UPDATE invoices SET amt = $1 RETURNING *`, [amt]);
+        // Needs to be passed in a JSON body of {amt, paid}
+        const { amt, paid } = req.body;
+        let paidDate;
+
+        if (paid === true && !invoice.rows[0].paid) {
+            paidDate = new Date();
+        } else if (paid === false) {
+            paidDate = null;
+        } else {
+            paidDate = invoice.rows[0].paid_date;
+        }
+
+        const updateInvoice = await db.query(`UPDATE invoices SET paid_date = $1, amt = $2, paid = $3 WHERE id = $4 RETURNING *`, [
+            paidDate,
+            amt,
+            paid,
+            id,
+        ]);
+
         // Returns obj of edited invoice: {invoice: {id, comp_code, amt, paid, add_date, paid_date}}
-        return res.json({ invoice: results.rows[0] });
+        return res.json({ invoice: updateInvoice.rows[0] });
     } catch (err) {
         next(err);
     }
