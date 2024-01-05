@@ -1,115 +1,137 @@
 /** Routes for Lunchly */
 
-const express = require("express");
+import express from 'express';
+import Customer from './models/customer.js';
+import Reservation from './models/reservation.js';
 
-const Customer = require("./models/customer");
-const Reservation = require("./models/reservation");
-
-const router = new express.Router();
+const router = express.Router();
 
 /** Homepage: show list of customers. */
 
-router.get("/", async function(req, res, next) {
-  try {
-    const customers = await Customer.all();
-    return res.render("customer_list.html", { customers });
-  } catch (err) {
-    return next(err);
-  }
+router.get('/', async (req, res, next) => {
+    try {
+        const customers = await Customer.all();
+        return res.render('customer_list.html', { customers });
+    } catch (err) {
+        return next(err);
+    }
 });
 
 /** Form to add a new customer. */
 
-router.get("/add/", async function(req, res, next) {
-  try {
-    return res.render("customer_new_form.html");
-  } catch (err) {
-    return next(err);
-  }
+router.get('/add/', async (req, res, next) => {
+    try {
+        return res.render('customer_new_form.html');
+    } catch (err) {
+        return next(err);
+    }
 });
 
 /** Handle adding a new customer. */
 
-router.post("/add/", async function(req, res, next) {
-  try {
-    const firstName = req.body.firstName;
-    const lastName = req.body.lastName;
-    const phone = req.body.phone;
-    const notes = req.body.notes;
+router.post('/add/', async (req, res, next) => {
+    try {
+        const firstName = req.body.firstName;
+        const lastName = req.body.lastName;
+        const phone = req.body.phone;
+        const notes = req.body.notes;
 
-    const customer = new Customer({ firstName, lastName, phone, notes });
-    await customer.save();
+        const customer = new Customer({ firstName, lastName, phone, notes });
+        await customer.save();
 
-    return res.redirect(`/${customer.id}/`);
-  } catch (err) {
-    return next(err);
-  }
+        return res.redirect(`/${customer.id}/`);
+    } catch (err) {
+        return next(err);
+    }
 });
 
 /** Show a customer, given their ID. */
 
-router.get("/:id/", async function(req, res, next) {
-  try {
-    const customer = await Customer.get(req.params.id);
+router.get('/:id/', async (req, res, next) => {
+    try {
+        const customer = await Customer.get(req.params.id);
 
-    const reservations = await customer.getReservations();
+        const reservations = await customer.getReservations();
 
-    return res.render("customer_detail.html", { customer, reservations });
-  } catch (err) {
-    return next(err);
-  }
+        return res.render('customer_detail.html', { customer, reservations });
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/** Search Route - Show customers, given their name. */
+
+router.get('/customers/search', async (req, res, next) => {
+    try {
+        const query = req.query.query || ''; // Get the search query from the request query parameters
+        const customers = await Customer.searchByName(query);
+        res.render('customer_list.html', { customers });
+    } catch (err) {
+        next(err);
+    }
+});
+
+/** Best Customers Route - Show 10 customers ordered by most reservations */
+
+router.get('/customers/best', async (req, res, next) => {
+    try {
+        const customers = await Customer.getTopCustomersByReservations();
+        res.render('customer_list.html', { customers, includeCount: true });
+    } catch (err) {
+        next(err);
+    }
 });
 
 /** Show form to edit a customer. */
 
-router.get("/:id/edit/", async function(req, res, next) {
-  try {
-    const customer = await Customer.get(req.params.id);
+router.get('/:id/edit/', async (req, res, next) => {
+    try {
+        const customer = await Customer.get(req.params.id);
 
-    res.render("customer_edit_form.html", { customer });
-  } catch (err) {
-    return next(err);
-  }
+        res.render('customer_edit_form.html', { customer });
+    } catch (err) {
+        return next(err);
+    }
 });
 
 /** Handle editing a customer. */
 
-router.post("/:id/edit/", async function(req, res, next) {
-  try {
-    const customer = await Customer.get(req.params.id);
-    customer.firstName = req.body.firstName;
-    customer.lastName = req.body.lastName;
-    customer.phone = req.body.phone;
-    customer.notes = req.body.notes;
-    await customer.save();
+router.post('/:id/edit/', async (req, res, next) => {
+    try {
+        const customer = await Customer.get(req.params.id);
+        customer.firstName = req.body.firstName;
+        customer.lastName = req.body.lastName;
+        customer.phone = req.body.phone;
+        customer.notes = req.body.notes;
+        await customer.save();
 
-    return res.redirect(`/${customer.id}/`);
-  } catch (err) {
-    return next(err);
-  }
+        return res.redirect(`/${customer.id}/`);
+    } catch (err) {
+        return next(err);
+    }
 });
 
 /** Handle adding a new reservation. */
 
-router.post("/:id/add-reservation/", async function(req, res, next) {
-  try {
-    const customerId = req.params.id;
-    const startAt = new Date(req.body.startAt);
-    const numGuests = req.body.numGuests;
-    const notes = req.body.notes;
+router.post('/:id/add-reservation/', async (req, res, next) => {
+    try {
+        const customerId = req.params.id;
+        const startAt = new Date(req.body.startAt);
+        const numGuests = req.body.numGuests;
+        const notes = req.body.notes;
 
-    const reservation = new Reservation({
-      customerId,
-      startAt,
-      numGuests,
-      notes
-    });
-    await reservation.save();
+        const reservation = new Reservation({
+            customerId,
+            startAt,
+            numGuests,
+            notes,
+        });
+        await reservation.save();
 
-    return res.redirect(`/${customerId}/`);
-  } catch (err) {
-    return next(err);
-  }
+        return res.redirect(`/${customerId}/`);
+    } catch (err) {
+        return next(err);
+    }
 });
 
-module.exports = router;
+export default router;

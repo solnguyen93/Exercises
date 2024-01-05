@@ -2,13 +2,23 @@
 {% block title %}Customers{% endblock %}
 {% block content %}
 
+
+<form class="d-flex" action="/customers/search" method="GET">
+    <input class="form-control me-2" type="search" placeholder="Search by name" aria-label="Search" name="query" />
+    <button class="btn btn-outline-success" type="submit">Search</button>
+</form>
+
 <a class="btn btn-primary" style="float: right" href="/add/">Add a Customer</a></p>
 
 <h1>Customers</h1>
 
-<ul style="column-count: 4">
+<ul style="column-count: 5">
   {% for customer in customers %}
-  <li><a href="/{{ customer.id }}/">{{ customer.firstName }} {{ customer.lastName }}</a></li>
+  <li><a href="/{{ customer.id }}/">{{ customer.fullName() }}</a>
+    {% if includeCount %}
+      ({{ customer.reservations_count }})
+    {% endif %}
+  </li>
   {% endfor %}
 </ul>
 
