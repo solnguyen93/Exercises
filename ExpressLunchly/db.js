@@ -6,17 +6,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 const { Client } = pkg;
 
-let DB_NAME;
-
-if (process.env.NODE_ENV === 'test') {
-    DB_NAME = 'lunchly_test';
-} else {
-    DB_NAME = 'lunchly';
-}
+const DB_NAME = process.env.NODE_ENV === 'test' ? 'lunchly_test' : process.env.DB_NAME || 'lunchly';
 
 const db = new Client({
     user: process.env.DB_USER || 'your_username', // Update with your PostgreSQL username
-    database: DB_NAME || 'your_database_name', // Update with your database name
+    database: DB_NAME,
     password: process.env.DB_PASSWORD || 'your_password', // Update with your PostgreSQL password
 });
 
