@@ -16,7 +16,7 @@
   {% for customer in customers %}
   <li><a href="/{{ customer.id }}/">{{ customer.fullName() }}</a>
     {% if includeCount %}
-      ({{ customer.reservations_count }})
+      ({{ customer.reservationsCount }})
     {% endif %}
   </li>
   {% endfor %}

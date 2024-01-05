@@ -6,13 +6,13 @@ import Reservation from './reservation.js';
 /** Customer of the restaurant. */
 
 class Customer {
-    constructor({ id, firstName, lastName, phone, notes, reservations_count }) {
+    constructor({ id, firstName, lastName, phone, notes, reservationsCount }) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
         this.notes = notes;
-        this.reservations_count = reservations_count;
+        this.reservationsCount = reservationsCount;
     }
 
     /** Get 10 best customers by most reservations. */
@@ -24,10 +24,10 @@ class Customer {
           c.last_name AS "lastName", 
           c.phone, 
           c.notes,
-          COUNT(r.id) AS reservations_count
+          COUNT(r.id) AS "reservationsCount"
         FROM customers c JOIN reservations r ON c.id = r.customer_id
         GROUP BY c.id
-        ORDER BY reservations_count DESC 
+        ORDER BY "reservationsCount" DESC 
         LIMIT 10`
         );
         return results.rows.map((c) => new Customer(c));
