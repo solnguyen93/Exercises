@@ -49,17 +49,3 @@ export default db;
 //     .catch((error) => console.error('Error connecting to the database:', error));
 
 // export default db;
-
-
-Server listening at http://localhost:3000
-Error connecting to the database: Error: SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string
-    at Object.continueSession (/home/solnguyen93/Springboard/EXERCISES/BizTime/node_modules/pg/lib/crypto/sasl.js:24:11)
-    at Client._handleAuthSASLContinue (/home/solnguyen93/Springboard/EXERCISES/BizTime/node_modules/pg/lib/client.js:272:18)
-    at Connection.emit (node:events:514:28)
-    at /home/solnguyen93/Springboard/EXERCISES/BizTime/node_modules/pg/lib/connection.js:117:12
-    at Parser.parse (/home/solnguyen93/Springboard/EXERCISES/BizTime/node_modules/pg-protocol/dist/parser.js:40:17)
-    at TLSSocket.<anonymous> (/home/solnguyen93/Springboard/EXERCISES/BizTime/node_modules/pg-protocol/dist/index.js:11:42)
-    at TLSSocket.emit (node:events:514:28)
-    at addChunk (node:internal/streams/readable:545:12)
-    at readableAddChunkPushByteMode (node:internal/streams/readable:495:3)
-    at Readable.push (node:internal/streams/readable:375:5)
