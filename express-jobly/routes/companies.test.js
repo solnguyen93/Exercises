@@ -1,7 +1,7 @@
 import request from 'supertest';
+import db from '../db.js';
 import app from '../app.js';
-
-import { commonBeforeAll, commonBeforeEach, commonAfterEach, commonAfterAll } from './_testCommon.js';
+import { commonBeforeAll, commonBeforeEach, commonAfterEach, commonAfterAll, u1Token } from './_testCommon.js';
 
 beforeAll(commonBeforeAll);
 beforeEach(commonBeforeEach);

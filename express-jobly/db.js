@@ -12,6 +12,8 @@ const db = new Client({
     password: process.env.DB_PASSWORD || 'your_password', // Replace 'your_password' with your PostgreSQL password
 });
 
-db.connect();
+db.connect()
+    .then(() => console.log('Connected to the database'))
+    .catch((error) => console.error('Error connecting to the database:', error));
 
 export default db;
