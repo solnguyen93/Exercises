@@ -50,12 +50,21 @@ router.post('/', ensureLoggedIn, async function (req, res, next) {
  */
 
 router.get('/', async function (req, res, next) {
-    try {
-        const companies = await Company.findAll();
-        return res.json({ companies });
-    } catch (err) {
-        return next(err);
-    }
+  try {
+      const supportedFilters = ['name', 'minEmployees', 'maxEmployees'];
+      
+      // Check for unsupported filters in the query parameters
+      const unsupportedFilters = Object.keys(req.query).filter(param => !supportedFilters.includes(param));
+      if (unsupportedFilters.length > 0) {
+        throw new BadRequestError(`Unsupported filter(s): ${unsupportedFilters.join(', ')}`);
+      }
+
+      const { name, minEmployees, maxEmployees } = req.query || {};
+      const companies = await Company.findAll({ name, minEmployees, maxEmployees });
+      return res.json({ companies });
+  } catch (err) {
+      return next(err);
+  }
 });
 
 /** GET /[handle]  =>  { company }

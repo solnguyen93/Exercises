@@ -92,6 +92,47 @@ describe('GET /companies', function () {
     });
 });
 
+describe('GET /companies with params', () => {
+    it('should return a 400 error for unsupported filters', async () => {
+        const response = await request(app).get('/companies').query({ invalidFilter: 'value' });
+
+        expect(response.status).toBe(400);
+        expect(response.body).toHaveProperty('error');
+        expect(response.body.error).toEqual({
+            message: 'Unsupported filter(s): invalidFilter',
+            status: 400,
+        });
+    });
+
+    it('should return companies filtered by name', async () => {
+        const response = await request(app).get('/companies').query({ name: 'inc' });
+
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveProperty('companies');
+    });
+
+    it('should return companies filtered by minimum number of employees', async () => {
+        const response = await request(app).get('/companies').query({ minEmployees: 100 });
+
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveProperty('companies');
+    });
+
+    it('should return companies filtered by maximum number of employees', async () => {
+        const response = await request(app).get('/companies').query({ maxEmployees: 500 });
+
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveProperty('companies');
+    });
+
+    it('should return companies filtered by name and range number of employees', async () => {
+        const response = await request(app).get('/companies').query({ name: 'a', minEmployees: 100, maxEmployees: 12000 });
+
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveProperty('companies');
+    });
+});
+
 /************************************** GET /companies/:handle */
 
 describe('GET /companies/:handle', function () {

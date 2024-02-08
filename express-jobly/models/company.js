@@ -36,22 +36,72 @@ export default class Company {
         return company;
     }
 
-    /** Find all companies.
+    /**
+     * Find companies based on optional filtering criteria.
      *
      * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
-     * */
+     *
+     * @param {Object} options - Filtering options passed as query parameters.
+     * @param {string} options.name - Company name to search for (optional).
+     * @param {number} options.minEmployees - Minimum number of employees (optional).
+     * @param {number} options.maxEmployees - Maximum number of employees (optional).
+     * @returns {Promise<Array>} Array of companies matching the filtering criteria.
+     * @throws {Error} If minEmployees is greater than maxEmployees.
+     * @example
+     * // Filter companies by name containing 'tech' and having at least 100 employees
+     * const companies1 = await findAll({ name: 'tech', minEmployees: 100 });
+     *
+     * // Filter companies having no more than 50 employees
+     * const companies2 = await findAll({ maxEmployees: 50 });
+     *
+     * // Filter companies with a specific name and employee range
+     * const companies3 = await findAll({ name: 'software', minEmployees: 50, maxEmployees: 200 });
+     *
+     * // Fetch all companies without any specific criteria
+     * const allCompanies = await findAll({});
+     */
+    static async findAll({ name, minEmployees, maxEmployees } = {}) {
+        // Validate minEmployees and maxEmployees
+        if (minEmployees && maxEmployees && minEmployees > maxEmployees) {
+            throw new Error('minEmployees cannot be greater than maxEmployees');
+        }
 
-    static async findAll() {
-        const companiesRes = await db.query(
-            `SELECT handle,
-                  name,
-                  description,
-                  num_employees AS "numEmployees",
-                  logo_url AS "logoUrl"
-           FROM companies
-           ORDER BY name`
-        );
-        return companiesRes.rows;
+        // Initialize an empty array to hold the WHERE conditions
+        const whereConditions = [];
+
+        // Add WHERE conditions based on the provided query parameters
+        let placeholderIndex = 1; // Initialize the placeholder index
+        if (name) {
+            // Add condition to search for the provided name substring in company names (case-insensitive)
+            whereConditions.push(`LOWER(name) LIKE '%' || LOWER($${placeholderIndex}) || '%'`); // example: ?name=tech  sql = WHERE name LIKE %$1%
+            placeholderIndex++;
+        }
+        if (minEmployees) {
+            // Add condition to filter companies with at least the specified number of employees
+            whereConditions.push(`num_employees >= $${placeholderIndex}`);
+            placeholderIndex++;
+        }
+        if (maxEmployees) {
+            // Add condition to filter companies with no more than the specified number of employees
+            whereConditions.push(`num_employees <= $${placeholderIndex}`);
+            placeholderIndex++;
+        }
+
+        // Initialize the SQL query
+        let sql = `SELECT handle, name, description, num_employees AS "numEmployees", logo_url AS "logoUrl" FROM companies`;
+
+        // Add WHERE clause if there are conditions
+        if (whereConditions.length > 0) {
+            sql += ' WHERE ' + whereConditions.join(' AND ');
+        }
+
+        // Add ORDER BY clause
+        sql += ' ORDER BY name';
+
+        // Execute the SQL query with the constructed WHERE clause and values
+        const companies = await db.query(sql, [name, minEmployees, maxEmployees].filter(Boolean));
+
+        return companies.rows;
     }
 
     /** Given a company handle, return data about company.
