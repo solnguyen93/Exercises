@@ -1,5 +1,5 @@
 import db from '../db.js';
-import { BadRequestError, NotFoundError } from '../expressError.js';
+import { BadRequestError, NotFoundError, UnauthorizedError } from '../expressError.js';
 import { sqlForPartialUpdate } from '../helpers/sql.js';
 
 /** Related functions for companies. */
