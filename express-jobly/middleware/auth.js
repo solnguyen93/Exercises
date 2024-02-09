@@ -46,7 +46,7 @@ export async function ensureLoggedIn(req, res, next) {
 
 export async function ensureAdmin(req, res, next) {
     try {
-        if (!res.locals.user.isAdmin) throw new UnauthorizedError();
+        if (!res.locals.user || !res.locals.user.isAdmin) throw new UnauthorizedError();
         return next();
     } catch (err) {
         return next(err);
@@ -60,7 +60,7 @@ export async function ensureAdmin(req, res, next) {
 
 export async function ensureCurrentUserOrAdmin(req, res, next) {
     try {
-        if (!(res.locals.user.isAdmin || res.locals.user.username === req.params.username)) {
+        if (!res.locals.user || !(res.locals.user.isAdmin || res.locals.user.username === req.params.username)) {
             throw new UnauthorizedError();
         }
         return next();
