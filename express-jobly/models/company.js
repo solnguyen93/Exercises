@@ -54,7 +54,7 @@ export default class Company {
      * // Filter companies having no more than 50 employees
      * const companies2 = await findAll({ maxEmployees: 50 });
      *
-     * // Filter companies with a specific name and employee range
+     * // Filter companies by name containing 'software' and employee range
      * const companies3 = await findAll({ name: 'software', minEmployees: 50, maxEmployees: 200 });
      *
      * // Fetch all companies without any specific criteria
@@ -66,25 +66,25 @@ export default class Company {
             throw new Error('minEmployees cannot be greater than maxEmployees');
         }
 
-        // Initialize an empty array to hold the WHERE conditions
+        // Initialize empty arrays whereConditions and values to hold the WHERE conditions and their corresponding values.
         const whereConditions = [];
+        const values = [];
 
-        // Add WHERE conditions based on the provided query parameters
-        let placeholderIndex = 1; // Initialize the placeholder index
+        // For each provided search parameter, push the appropriate condition into the whereConditions array and add its value into the values array.
         if (name) {
             // Add condition to search for the provided name substring in company names (case-insensitive)
-            whereConditions.push(`LOWER(name) LIKE '%' || LOWER($${placeholderIndex}) || '%'`); // example: ?name=tech  sql = WHERE name LIKE %$1%
-            placeholderIndex++;
+            values.push(name);
+            whereConditions.push(`LOWER(name) LIKE '%' || LOWER($${values.length}) || '%'`);
         }
         if (minEmployees) {
             // Add condition to filter companies with at least the specified number of employees
-            whereConditions.push(`num_employees >= $${placeholderIndex}`);
-            placeholderIndex++;
+            values.push(minEmployees);
+            whereConditions.push(`num_employees >= $${values.length}`);
         }
         if (maxEmployees) {
             // Add condition to filter companies with no more than the specified number of employees
-            whereConditions.push(`num_employees <= $${placeholderIndex}`);
-            placeholderIndex++;
+            values.push(maxEmployees);
+            whereConditions.push(`num_employees <= $${values.length}`);
         }
 
         // Initialize the SQL query
@@ -99,7 +99,7 @@ export default class Company {
         sql += ' ORDER BY name';
 
         // Execute the SQL query with the constructed WHERE clause and values
-        const companies = await db.query(sql, [name, minEmployees, maxEmployees].filter(Boolean));
+        const companies = await db.query(sql, values);
 
         return companies.rows;
     }
@@ -128,6 +128,16 @@ export default class Company {
 
         if (!company) throw new NotFoundError(`No company: ${handle}`);
 
+        const jobsRes = await db.query(
+            `SELECT id, title, salary, equity
+             FROM jobs
+             WHERE company_handle = $1
+             ORDER BY id`,
+            [handle]
+        );
+
+        company.jobs = jobsRes.rows;
+
         return company;
     }
 
@@ -151,6 +161,7 @@ export default class Company {
         const handleVarIdx = '$' + (values.length + 1);
 
         const querySql = `UPDATE companies 
+
                       SET ${setCols} 
                       WHERE handle = ${handleVarIdx} 
                       RETURNING handle, 

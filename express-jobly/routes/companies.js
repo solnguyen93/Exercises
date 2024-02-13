@@ -49,6 +49,8 @@ router.post('/', ensureAdmin, async function (req, res, next) {
  * Authorization required: none
  */
 
+
+
 router.get('/', async function (req, res, next) {
   try {
       const supportedFilters = ['name', 'minEmployees', 'maxEmployees'];
@@ -59,14 +61,17 @@ router.get('/', async function (req, res, next) {
         throw new BadRequestError(`Unsupported filter(s): ${unsupportedFilters.join(', ')}`);
       }
 
-      const { name, minEmployees, maxEmployees } = req.query || {};
+      const minEmployees = req.query.hasOwnProperty('minEmployees') ? parseInt(req.query.minEmployees) : undefined;
+
+      const maxEmployees = req.query.hasOwnProperty('maxEmployees') ? parseInt(req.query.maxEmployees) : undefined;
+
+      const { name } = req.query || {};
       const companies = await Company.findAll({ name, minEmployees, maxEmployees });
       return res.json({ companies });
   } catch (err) {
       return next(err);
   }
 });
-
 /** GET /[handle]  =>  { company }
  *
  *  Company is { handle, name, description, numEmployees, logoUrl, jobs }

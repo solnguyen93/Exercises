@@ -1,23 +1,23 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "http://our.company.com/companyUpdate.schema.json",
+    "$id": "http://our.company.com/jobUpdate.schema.json",
     "type": "object",
     "properties": {
-        "name": {
+        "title": {
             "type": "string",
             "minLength": 1,
             "maxLength": 30
         },
-        "description": {
-            "type": "string"
-        },
-        "numEmployees": {
+        "salary": {
             "type": "integer",
-            "minimum": 0
+            "minimum": 0,
+            "default": 0
         },
-        "logoUrl": {
-            "type": "string",
-            "format": "uri"
+        "equity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1.0,
+            "default": 0
         }
     },
     "additionalProperties": false,

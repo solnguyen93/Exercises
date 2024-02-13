@@ -1,13 +1,18 @@
 import db from '../db.js';
 import User from '../models/user.js';
 import Company from '../models/company.js';
+import Job from '../models/job.js';
 import { createToken } from '../helpers/tokens.js';
+
+const testJobIds = [];
 
 async function commonBeforeAll() {
     // noinspection SqlWithoutWhere
     await db.query('DELETE FROM users');
     // noinspection SqlWithoutWhere
     await db.query('DELETE FROM companies');
+    // noinspection SqlWithoutWhere
+    await db.query('DELETE FROM jobs');
 
     await Company.create({
         handle: 'c1',
@@ -30,6 +35,22 @@ async function commonBeforeAll() {
         description: 'Desc3',
         logoUrl: 'http://c3.img',
     });
+    await Company.create({
+        handle: 'c4',
+        name: 'C4',
+        numEmployees: 4,
+        description: 'Desc4',
+        logoUrl: 'http://c4.img',
+    });
+
+    const job1 = await Job.create({ title: 'C1Job', salary: 125000, equity: '0.10', companyHandle: 'c1' });
+    testJobIds.push(job1.id);
+
+    const job2 = await Job.create({ title: 'C2Job', salary: 234, equity: '0.09', companyHandle: 'c2' });
+    testJobIds.push(job2.id);
+
+    const job3 = await Job.create({ title: 'C3Job', salary: 59000, equity: '0.54', companyHandle: 'c3' });
+    testJobIds.push(job3.id);
 
     await User.register({
         username: 'u1',
@@ -73,4 +94,4 @@ const u1Token = createToken({ username: 'u1', isAdmin: false });
 
 const adminToken = createToken({ username: 'a1', isAdmin: true });
 
-export { commonBeforeAll, commonBeforeEach, commonAfterEach, commonAfterAll, u1Token, adminToken };
+export { commonBeforeAll, commonBeforeEach, commonAfterEach, commonAfterAll, u1Token, adminToken, testJobIds };

@@ -9,6 +9,7 @@ import { authenticateJWT } from './middleware/auth.js';
 import authRoutes from './routes/auth.js';
 import companiesRoutes from './routes/companies.js';
 import usersRoutes from './routes/users.js';
+import jobsRoutes from './routes/jobs.js';
 import morgan from 'morgan';
 
 const app = express();
@@ -21,6 +22,7 @@ app.use(authenticateJWT);
 app.use('/auth', authRoutes);
 app.use('/companies', companiesRoutes);
 app.use('/users', usersRoutes);
+app.use('/jobs', jobsRoutes);
 
 /** Handle 404 errors -- this matches everything */
 app.use((req, res, next) => {
