@@ -106,6 +106,7 @@ describe('findAll', function () {
                 lastName: 'U1L',
                 email: 'u1@email.com',
                 isAdmin: false,
+                jobs: 0,
             },
             {
                 username: 'u2',
@@ -113,6 +114,7 @@ describe('findAll', function () {
                 lastName: 'U2L',
                 email: 'u2@email.com',
                 isAdmin: false,
+                jobs: 0,
             },
         ]);
     });
@@ -129,6 +131,20 @@ describe('get', function () {
             lastName: 'U1L',
             email: 'u1@email.com',
             isAdmin: false,
+            jobs: 0,
+        });
+    });
+
+    test('works', async function () {
+        await User.applyForJob('u1', 1); // Apply user u1 to job id 1 before running this test
+        const user = await User.get('u1');
+        expect(user).toEqual({
+            username: 'u1',
+            firstName: 'U1F',
+            lastName: 'U1L',
+            email: 'u1@email.com',
+            isAdmin: false,
+            jobs: [{ id: 1, title: 'Job1', salary: 10, equity: 0.01, companyHandle: 'c1' }],
         });
     });
 
@@ -213,6 +229,46 @@ describe('remove', function () {
             fail();
         } catch (err) {
             expect(err instanceof NotFoundError).toBeTruthy();
+        }
+    });
+});
+
+describe('applyForJob', function () {
+    test('works', async function () {
+        await User.applyForJob('u1', 1);
+        const res = await db.query(
+            `SELECT username, job_id
+            FROM applications
+            WHERE username = 'u1' AND job_id = 1`
+        );
+        expect(res.rows).toEqual([{ username: 'u1', job_id: 1 }]);
+    });
+
+    test('throws NotFoundError if user not found', async function () {
+        try {
+            await User.applyForJob('nope', 1);
+            fail();
+        } catch (err) {
+            expect(err instanceof NotFoundError).toBeTruthy();
+        }
+    });
+
+    test('throws NotFoundError if job not found', async function () {
+        try {
+            await User.applyForJob('u1', 999);
+            fail();
+        } catch (err) {
+            expect(err instanceof NotFoundError).toBeTruthy();
+        }
+    });
+
+    test('throws BadRequestError if user has already applied for job', async function () {
+        await User.applyForJob('u1', 1);
+        try {
+            await User.applyForJob('u1', 1);
+            fail();
+        } catch (err) {
+            expect(err instanceof BadRequestError).toBeTruthy();
         }
     });
 });

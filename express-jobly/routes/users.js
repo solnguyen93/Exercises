@@ -110,4 +110,20 @@ router.delete('/:username', ensureCurrentUserOrAdmin, async (req, res, next) => 
     }
 });
 
+/** POST /[username]/jobs/[id]  => { applied, job id }
+ * 
+ * Applies for a job with the specified ID for the given user.
+ * 
+ * Authorization required: admin or current user
+ **/
+
+router.post('/:username/jobs/:id', ensureCurrentUserOrAdmin, async (req, res, next) => {
+    try {
+        await User.applyForJob(req.params.username, req.params.id);
+        return res.json({ applied: req.params.id});
+    } catch (err) {
+        return next(err);
+    }
+});
+
 export default router;

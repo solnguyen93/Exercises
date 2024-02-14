@@ -3,7 +3,7 @@ import db from '../db.js';
 import app from '../app.js';
 import User from '../models/user.js';
 
-import { commonBeforeAll, commonBeforeEach, commonAfterEach, commonAfterAll, u1Token, adminToken } from './_testCommon.js';
+import { commonBeforeAll, commonBeforeEach, commonAfterEach, commonAfterAll, u1Token, adminToken, testJobIds } from './_testCommon.js';
 
 beforeAll(commonBeforeAll);
 beforeEach(commonBeforeEach);
@@ -129,6 +129,7 @@ describe('GET /users', function () {
                     lastName: 'U1L',
                     email: 'user1@user.com',
                     isAdmin: false,
+                    jobs: 0,
                 },
                 {
                     username: 'u2',
@@ -136,6 +137,7 @@ describe('GET /users', function () {
                     lastName: 'U2L',
                     email: 'user2@user.com',
                     isAdmin: false,
+                    jobs: 0,
                 },
                 {
                     username: 'u3',
@@ -143,6 +145,7 @@ describe('GET /users', function () {
                     lastName: 'U3L',
                     email: 'user3@user.com',
                     isAdmin: false,
+                    jobs: 0,
                 },
             ],
         });
@@ -180,6 +183,7 @@ describe('GET /users/:username', function () {
                 lastName: 'U1L',
                 email: 'user1@user.com',
                 isAdmin: false,
+                jobs: 0,
             },
         });
     });
@@ -320,5 +324,45 @@ describe('DELETE /users/:username', function () {
     test('not found if user missing', async function () {
         const resp = await request(app).delete(`/users/nope`).set('authorization', `Bearer ${adminToken}`);
         expect(resp.statusCode).toEqual(404);
+    });
+});
+
+/************************************** POST /users/:username/jobs/:id */
+
+describe('POST /users/:username/jobs/:id', function () {
+    test('works for admin', async function () {
+        const resp = await request(app).post(`/users/u1/jobs/${testJobIds[0]}`).set('authorization', `Bearer ${adminToken}`);
+        expect(resp.body).toEqual({ applied: `${testJobIds[0]}` });
+    });
+
+    test('works for current user', async function () {
+        const resp = await request(app).post(`/users/u1/jobs/${testJobIds[0]}`).set('authorization', `Bearer ${u1Token}`);
+        expect(resp.body).toEqual({ applied: `${testJobIds[0]}` });
+    });
+
+    test('unauth for different user', async function () {
+        const resp = await request(app).post(`/users/u2/jobs/${testJobIds[0]}`).set('authorization', `Bearer ${u1Token}`);
+        expect(resp.statusCode).toEqual(401);
+    });
+
+    test('unauth for anon', async function () {
+        const resp = await request(app).post(`/users/u1/jobs/${testJobIds[0]}`);
+        expect(resp.statusCode).toEqual(401);
+    });
+
+    test('not found if user not found', async function () {
+        const resp = await request(app).post(`/users/nope/jobs/${testJobIds[0]}`).set('authorization', `Bearer ${adminToken}`);
+        expect(resp.statusCode).toEqual(404);
+    });
+
+    test('not found if job not found', async function () {
+        const resp = await request(app).post(`/users/u1/jobs/999`).set('authorization', `Bearer ${adminToken}`);
+        expect(resp.statusCode).toEqual(404);
+    });
+
+    test('bad request if user already applied for job', async function () {
+        await request(app).post(`/users/u1/jobs/${testJobIds[0]}`).set('authorization', `Bearer ${adminToken}`);
+        const resp = await request(app).post(`/users/u1/jobs/${testJobIds[0]}`).set('authorization', `Bearer ${adminToken}`);
+        expect(resp.statusCode).toEqual(400);
     });
 });

@@ -40,9 +40,10 @@ router.post('/', ensureAdmin, async function (req, res, next) {
  *   { jobs: [ { id, title, salary, equity, companyHandle }, ...] }
  *
  * Can filter on provided search filters:
+ * - titleLike (will find case-insensitive, partial matches)
  * - minSalary
  * - hasEquity
- * - titleLike (will find case-insensitive, partial matches)
+ * 
  *
  * Authorization required: none
  */
