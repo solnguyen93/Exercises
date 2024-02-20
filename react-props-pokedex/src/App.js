@@ -1,5 +1,4 @@
 import React from 'react';
-// import './App.css';
 import Pokedex from './Pokedex';
 import eightPokemons from './data/eightPokemons';
 
