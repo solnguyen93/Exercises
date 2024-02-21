@@ -1,0 +1,38 @@
+/* EightBall.css */
+
+.EightBall {
+    box-shadow: 5px 5px 5px rgb(124, 124, 124);
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background-color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    font-family: Arial, sans-serif;
+    cursor: pointer;
+}
+
+.EightBall-msg {
+    color: white;
+    font-size: 18px;
+}
+
+.EightBall-resetBtn {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.3s, transform 0.3s;
+    letter-spacing: 1px;
+}
+
+.EightBall-resetBtn:hover {
+    background-color: #0056b3;
+    transform: scale(1.1);
+}
