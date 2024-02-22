@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="Card"
+  >
+    <h4
+      class="Card-title"
+    />
+    <img
+      class="Card-image"
+    />
+    <small
+      class="Card-small"
+    >
+      Image  of .
+    </small>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`matches snapshot with custom props 1`] = `
+<DocumentFragment>
+  <div
+    class="Card"
+  >
+    <h4
+      class="Card-title"
+    >
+      Custom Caption
+    </h4>
+    <img
+      alt="Custom Caption"
+      class="Card-image"
+      src="custom.jpg"
+    />
+    <small
+      class="Card-small"
+    >
+      Image 1 of 3.
+    </small>
+  </div>
+</DocumentFragment>
+`;
