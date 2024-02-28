@@ -44,11 +44,11 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
             }
             initialBoard.push(row);
         }
-        // // If all cells are initially unlit, turn first cell on
-        // if (numLitCells === 0) {
-        //     initialBoard[0][0].isLit = true;
-        //     numLitCells++;
-        // }
+        // If all cells are initially unlit, turn first cell on
+        if (numLitCells === 0) {
+            initialBoard[0][0].isLit = true;
+            numLitCells++;
+        }
         // // Check if the number of lit cells is odd
         // if (numLitCells % 2 !== 0) {
         //     // Get the status of the last cell in the last row
