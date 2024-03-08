@@ -40,6 +40,7 @@ function Deck() {
             setDrawnCards((drawnCards) => [...drawnCards, res.data.cards[0]]);
             // setDrawnCards([...drawnCards, res.data.cards[0]]);   *DOES NOT WORK*
         } catch (e) {
+            setTimerStarted(false);
             alert(e.message);
         }
     }
