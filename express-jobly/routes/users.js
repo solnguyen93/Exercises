@@ -6,8 +6,8 @@ import { ensureAdmin, ensureCurrentUserOrAdmin } from '../middleware/auth.js';
 import { BadRequestError } from '../expressError.js';
 import User from '../models/user.js';
 import { createToken } from '../helpers/tokens.js';
-import userNewSchema from '../schemas/userNew.json' with { type: 'json' };;
-import userUpdateSchema from '../schemas/userUpdate.json' with { type: 'json' };;
+import userNewSchema from '../schemas/userNew.json' with { type: 'json' };
+import userUpdateSchema from '../schemas/userUpdate.json' with { type: 'json' };
 
 const router = express.Router();
 
