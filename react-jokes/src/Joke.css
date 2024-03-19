@@ -1,0 +1,35 @@
+.joke-container {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    width: 60%;
+}
+
+.joke-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.joke-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.joke-text {
+    margin-bottom: 10px;
+}
+
+.vote-section {
+    display: flex;
+    align-items: center;
+}
+
+.vote-button {
+    margin-right: 5px;
+}
+
+.score {
+    margin-left: auto;
+    font-style: italic;
+}
